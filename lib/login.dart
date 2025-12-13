@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
                     tag: 'pic',
                     transitionOnUserGestures: true,
                     child: Container(
-                      width: screenWidth * 0.45,
+                      width: screenWidth * 0.4,
                       decoration: BoxDecoration(
                         color: Color(0x999C27B0),
                         borderRadius: BorderRadius.circular(8.0),
@@ -49,13 +49,18 @@ class _LoginState extends State<Login> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Hello',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 40.0,
-                            fontWeight: FontWeight.bold,
-                            height: 0.5,
+                        Hero(
+                          tag: 'greet',
+                          transitionOnUserGestures: true,
+                          child: Material(
+                            child: Text(
+                              'Hello',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 40.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                         Text(
@@ -63,8 +68,10 @@ class _LoginState extends State<Login> {
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 25.0,
+                            height: 0.6,
                           ),
                         ),
+                        SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(

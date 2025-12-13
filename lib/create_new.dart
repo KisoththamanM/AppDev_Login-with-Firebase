@@ -24,16 +24,30 @@ class _CreateNewState extends State<CreateNew> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Hero(
-                    tag: 'pic',
-                    transitionOnUserGestures: true,
-                    child: Container(
-                      width: screenWidth * 0.1,
-                      decoration: BoxDecoration(
-                        color: Color(0x999C27B0),
-                        borderRadius: BorderRadius.circular(8.0),
+                  child: Stack(
+                    children: [
+                      Hero(
+                        tag: 'pic',
+                        transitionOnUserGestures: true,
+                        child: Container(
+                          width: screenWidth * 0.1,
+                          decoration: BoxDecoration(
+                            color: Color(0x999C27B0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
                       ),
-                    ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -48,12 +62,18 @@ class _CreateNewState extends State<CreateNew> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Create New Account',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 40.0,
-                            fontWeight: FontWeight.bold,
+                        Hero(
+                          tag: 'greet',
+                          transitionOnUserGestures: true,
+                          child: Material(
+                            child: Text(
+                              'Create New Account',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 40.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                         Padding(
