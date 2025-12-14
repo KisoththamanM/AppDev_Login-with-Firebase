@@ -85,9 +85,17 @@ class _CreateNewState extends State<CreateNew> {
                         transitionOnUserGestures: true,
                         child: Container(
                           width: screenWidth * 0.1,
+                          height: screenHeight - 16.0,
                           decoration: BoxDecoration(
                             color: Color(0x999C27B0),
                             borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(
+                              'assets/pexels-veeterzy-114979.jpg',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
