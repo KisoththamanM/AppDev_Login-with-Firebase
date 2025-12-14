@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login_with_firebase/create_new.dart';
+import 'package:login_with_firebase/home.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -9,6 +11,31 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> loginUser(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login Successful")));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    } on FirebaseAuthException catch (e) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message.toString())));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -75,6 +102,7 @@ class _LoginState extends State<Login> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
                               border: OutlineInputBorder(
@@ -90,6 +118,8 @@ class _LoginState extends State<Login> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: passwordController,
+                            obscureText: true,
                             decoration: InputDecoration(
                               labelText: 'Password',
                               border: OutlineInputBorder(
@@ -106,7 +136,9 @@ class _LoginState extends State<Login> {
                         Align(
                           alignment: Alignment.center,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              loginUser(context);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple,
                             ),
