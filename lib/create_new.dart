@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateNew extends StatefulWidget {
   const CreateNew({super.key});
@@ -8,6 +10,58 @@ class CreateNew extends StatefulWidget {
 }
 
 class _CreateNewState extends State<CreateNew> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController jobController = TextEditingController();
+
+  Future<void> signupUser() async {
+    try {
+      //Create user in Firebase Auth
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
+
+      //Get user UID
+      String uid = userCredential.user!.uid;
+
+      //Save additional user info in Firestore
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'first_name': firstNameController.text.trim(),
+        'last_name': lastNameController.text.trim(),
+        'job': jobController.text.trim(),
+        'email': emailController.text.trim(),
+        'created_at': FieldValue.serverTimestamp(),
+      });
+
+      //Check if widget is still mounted
+      if (!mounted) return;
+
+      //Show success message
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Signup Successful")));
+
+      //Navigate back to login page
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message.toString())));
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -79,6 +133,7 @@ class _CreateNewState extends State<CreateNew> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: firstNameController,
                             decoration: InputDecoration(
                               labelText: 'First Name',
                               border: OutlineInputBorder(
@@ -94,6 +149,7 @@ class _CreateNewState extends State<CreateNew> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: lastNameController,
                             decoration: InputDecoration(
                               labelText: 'Last Name',
                               border: OutlineInputBorder(
@@ -109,6 +165,7 @@ class _CreateNewState extends State<CreateNew> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: jobController,
                             decoration: InputDecoration(
                               labelText: 'Job',
                               border: OutlineInputBorder(
@@ -124,6 +181,7 @@ class _CreateNewState extends State<CreateNew> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
                               border: OutlineInputBorder(
@@ -139,6 +197,7 @@ class _CreateNewState extends State<CreateNew> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: TextFormField(
+                            controller: passwordController,
                             decoration: InputDecoration(
                               labelText: 'Password',
                               border: OutlineInputBorder(
@@ -155,7 +214,9 @@ class _CreateNewState extends State<CreateNew> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              signupUser();
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple,
                             ),
